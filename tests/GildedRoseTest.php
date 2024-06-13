@@ -1,7 +1,9 @@
 <?php
+require __DIR__ . '/../vendor/autoload.php';
 
 use App\GildedRose;
 use PHPUnit\Framework\TestCase;
+use PHPUnit\Framework\Attributes\Test;
 
 class GildedRoseTest extends TestCase
 {
