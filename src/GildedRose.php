@@ -2,111 +2,35 @@
 
 namespace App;
 
-class GildedRose
-{
-    public $name;
-    public $quality;
-    public $sellIn;
+use PHPUnit\Framework\InvalidArgumentException;
 
-    public function __construct($name, $quality, $sellIn)
-    {
-        $this->name = $name;
-        $this->quality = $quality;
-        $this->sellIn = $sellIn;
-    }
+class GildedRose {
 
+    /**
+    * Lookup table for Classes
+    */
+    private static $items = [
+        'normal'                                    => Item::class,
+        'Aged Brie'                                 => Brie::class,
+        'Sulfuras, Hand of Ragnaros'                => Sulfuras::class,
+        'Backstage passes to a TAFKAL80ETC concert' => BackstagePasses::class,
+        'Conjured Mana Cake'                        => Congured::class
+    ];
+   
     /**
      * Static Constructor (Static Factory Method)
      * (Allows different types of initializations through the Main "__construct"
      * ex. ofJSON, ofArray, ofAnything etc.)
      */
-    public static function of($name, $quality, $sellIn)
-    {
-        return new static($name, $quality, $sellIn);
-    }
-
-    /**
-     * Main Function
-     */
-    public function tick(){
-
-        if ( $this->name === 'normal' ){
-            return $this->normalTick();
-        }
-
-        if ( $this->name == 'Aged Brie' ){
-            return $this->brieTick();
-        }
-
-        if ( $this->name == 'Sulfuras, Hand of Ragnaros' ){
-            return $this->sulfurasTick();
-        }
-
-        if ( $this->name == 'Backstage passes to a TAFKAL80ETC concert' ){
-            return $this->backstagePassesTick();
-        }
+    public static function of($name, $quality, $sellIn){
 
         
-    }
 
-    /**
-     * Start
-     */
-    private function normalTick(){
-        
-        $this->sellIn -= 1;
-        $this->quality -= 1;
-
-        if ( $this->sellIn <= 0 ){
-            $this->quality -= 1;
+        if (! array_key_exists($name, self::$items)){
+            throw new InvalidArgumentException('Item type does not exist.');
         }
 
-        if ($this->quality <0){
-            $this->quality = 0;
-        }
-
-    }
-
-    private function brieTick(){
-
-        $this->sellIn -= 1;
-        $this->quality += 1;
-
-        if ( $this->sellIn <= 0 ){
-            $this->quality += 1;
-        }
-
-        if($this->quality > 50){
-            $this->quality = 50;
-        }
-        
-    }
-
-    private function sulfurasTick(){
-
-    }
-
-    private function backstagePassesTick(){
-        
-        $this->quality += 1;
-    
-        if ($this->sellIn <= 10){
-            $this->quality += 1;
-        }
-
-        if ($this->sellIn <= 5){
-            $this->quality += 1;
-        }
-
-        if ($this->sellIn <= 0) {
-            $this->quality = 0;
-        }
-
-        if ($this->quality > 50) {
-            $this->quality = 50;
-        }
-
-        $this->sellIn -= 1;
+        return (object)new self::$items[$name]($quality, $sellIn);
 
     }
 
